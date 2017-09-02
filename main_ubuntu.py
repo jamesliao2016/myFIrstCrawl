@@ -2,14 +2,14 @@
 import urllib
 
 domain = 'http://www.liaoxuefeng.com'           #廖雪峰的域名
-path = r'C:\Users\cyhhao2013\Desktop\temp\\'    #html要保存的路径
+path = r'/home/james/PycharmProjects/PythonCrawler1/crawl_sep_2/'    #html要保存的路径
 
 # 一个html的头文件
-input = open(r'C:\Users\cyhhao2013\Desktop\0.html', 'r')
+input = open(r'/home/james/PycharmProjects/PythonCrawler1/0.html', 'r')
 head = input.read()
 
 # 打开python教程主界面
-f = urllib.urlopen("http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000")
+f = urllib.urlopen("https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000")
 home = f.read()
 f.close()
 
@@ -33,14 +33,14 @@ for li in list:
 
     # 获得title为了写文件名
     title = html.split("<title>")[1]
-    title = title.split(" - 廖雪峰的官方网站</title>")[0]
+    title = title.split("- 廖雪峰的官方网站</title>")[0]
 
     # 要转一下码，不然加到路径里就悲剧了
     title = title.decode('utf-8').replace("/", " ")
 
     # 截取正文
-    html = html.split(r'<!-- block main -->')[1]
-    html = html.split(r'<h4>您的支持是作者写作最大的动力！</h4>')[0]
+    html = html.split(r'<div class="x-wiki-content x-main-content"><p>')[1]
+    html = html.split(r'<div class="x-sponsor-a uk-clearfix">')[0]
     html = html.replace(r'src="', 'src="' + domain)
 
     # 加上头和尾组成完整的html
