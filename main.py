@@ -1,6 +1,6 @@
 # coding:utf-8
 import urllib
-
+# credit :https://github.com/cyhhao
 domain = 'http://www.liaoxuefeng.com'           #廖雪峰的域名
 path = r'C:\Users\cyhhao2013\Desktop\temp\\'    #html要保存的路径
 
