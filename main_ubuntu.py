@@ -39,8 +39,8 @@ for li in list:
     title = title.decode('utf-8').replace("/", " ")
 
     # 截取正文
-    html = html.split(r'<div class="x-wiki-content x-main-content"><p>')[1]
-    html = html.split(r'<div class="x-sponsor-a uk-clearfix">')[0]
+    html = html.split(r'div class="x-wiki-content x-main-content')[1]
+    html = html.split(r'x-sponsor-a uk-clearfix')[0]
     html = html.replace(r'src="', 'src="' + domain)
 
     # 加上头和尾组成完整的html
