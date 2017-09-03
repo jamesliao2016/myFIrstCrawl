@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html xmlns:itranswarp="http://www.itranswarp.com/" xmlns:wb="http://open.weibo.com/wb">
+<!--
+
+-->
+<head>
+    <meta charset="utf-8" />
+"><p>Python的内建模块<code>itertools</code>提供了非常有用的用于操作迭代对象的函数。</p>
+<p>首先，我们看看<code>itertools</code>提供的几个“无限”迭代器：</p>
+<pre><code>&gt;&gt;&gt; import itertools
+&gt;&gt;&gt; natuals = itertools.count(1)
+&gt;&gt;&gt; for n in natuals:
+...     print n
+...
+1
+2
+3
+...
+</code></pre><p>因为<code>count()</code>会创建一个无限的迭代器，所以上述代码会打印出自然数序列，根本停不下来，只能按<code>Ctrl+C</code>退出。</p>
+<p><code>cycle()</code>会把传入的一个序列无限重复下去：</p>
+<pre><code>&gt;&gt;&gt; import itertools
+&gt;&gt;&gt; cs = itertools.cycle(&#39;ABC&#39;) # 注意字符串也是序列的一种
+&gt;&gt;&gt; for c in cs:
+...     print c
+...
+&#39;A&#39;
+&#39;B&#39;
+&#39;C&#39;
+&#39;A&#39;
+&#39;B&#39;
+&#39;C&#39;
+...
+</code></pre><p>同样停不下来。</p>
+<p><code>repeat()</code>负责把一个元素无限重复下去，不过如果提供第二个参数就可以限定重复次数：</p>
+<pre><code>&gt;&gt;&gt; ns = itertools.repeat(&#39;A&#39;, 10)
+&gt;&gt;&gt; for n in ns:
+...     print n
+...
+打印10次&#39;A&#39;
+</code></pre><p>无限序列只有在<code>for</code>迭代时才会无限地迭代下去，如果只是创建了一个迭代对象，它不会事先把无限个元素生成出来，事实上也不可能在内存中创建无限多个元素。</p>
+<p>无限序列虽然可以无限迭代下去，但是通常我们会通过<code>takewhile()</code>等函数根据条件判断来截取出一个有限的序列：</p>
+<pre><code>&gt;&gt;&gt; natuals = itertools.count(1)
+&gt;&gt;&gt; ns = itertools.takewhile(lambda x: x &lt;= 10, natuals)
+&gt;&gt;&gt; for n in ns:
+...     print n
+...
+打印出1到10
+</code></pre><p><code>itertools</code>提供的几个迭代器操作函数更加有用：</p>
+<h3><a name="#chain-"></a>chain()</h3>
+<p><code>chain()</code>可以把一组迭代对象串联起来，形成一个更大的迭代器：</p>
+<pre><code>for c in itertools.chain(&#39;ABC&#39;, &#39;XYZ&#39;):
+    print c
+# 迭代效果：&#39;A&#39; &#39;B&#39; &#39;C&#39; &#39;X&#39; &#39;Y&#39; &#39;Z&#39;
+</code></pre><h3><a name="#groupby-"></a>groupby()</h3>
+<p><code>groupby()</code>把迭代器中相邻的重复元素挑出来放在一起：</p>
+<pre><code>&gt;&gt;&gt; for key, group in itertools.groupby(&#39;AAABBBCCAAA&#39;):
+...     print key, list(group) # 为什么这里要用list()函数呢？
+...
+A [&#39;A&#39;, &#39;A&#39;, &#39;A&#39;]
+B [&#39;B&#39;, &#39;B&#39;, &#39;B&#39;]
+C [&#39;C&#39;, &#39;C&#39;]
+A [&#39;A&#39;, &#39;A&#39;, &#39;A&#39;]
+</code></pre><p>实际上挑选规则是通过函数完成的，只要作用于函数的两个元素返回的值相等，这两个元素就被认为是在一组的，而函数返回值作为组的key。如果我们要忽略大小写分组，就可以让元素<code>&#39;A&#39;</code>和<code>&#39;a&#39;</code>都返回相同的key：</p>
+<pre><code>&gt;&gt;&gt; for key, group in itertools.groupby(&#39;AaaBBbcCAAa&#39;, lambda c: c.upper()):
+...     print key, list(group)
+...
+A [&#39;A&#39;, &#39;a&#39;, &#39;a&#39;]
+B [&#39;B&#39;, &#39;B&#39;, &#39;b&#39;]
+C [&#39;c&#39;, &#39;C&#39;]
+A [&#39;A&#39;, &#39;A&#39;, &#39;a&#39;]
+</code></pre><h3><a name="#imap-"></a>imap()</h3>
+<p><code>imap()</code>和<code>map()</code>的区别在于，<code>imap()</code>可以作用于无穷序列，并且，如果两个序列的长度不一致，以短的那个为准。</p>
+<pre><code>&gt;&gt;&gt; for x in itertools.imap(lambda x, y: x * y, [10, 20, 30], itertools.count(1)):
+...     print x
+...
+10
+40
+90
+</code></pre><p>注意<code>imap()</code>返回一个迭代对象，而<code>map()</code>返回list。当你调用<code>map()</code>时，已经计算完毕：</p>
+<pre><code>&gt;&gt;&gt; r = map(lambda x: x*x, [1, 2, 3])
+&gt;&gt;&gt; r # r已经计算出来了
+[1, 4, 9]
+</code></pre><p>当你调用<code>imap()</code>时，并没有进行任何计算：</p>
+<pre><code>&gt;&gt;&gt; r = itertools.imap(lambda x: x*x, [1, 2, 3])
+&gt;&gt;&gt; r
+&lt;itertools.imap object at 0x103d3ff90&gt;
+# r只是一个迭代对象
+</code></pre><p>必须用<code>for</code>循环对<code>r</code>进行迭代，才会在每次循环过程中计算出下一个元素：</p>
+<pre><code>&gt;&gt;&gt; for x in r:
+...     print x
+...
+1
+4
+9
+</code></pre><p>这说明<code>imap()</code>实现了“惰性计算”，也就是在需要获得结果的时候才计算。类似<code>imap()</code>这样能够实现惰性计算的函数就可以处理无限序列：</p>
+<pre><code>&gt;&gt;&gt; r = itertools.imap(lambda x: x*x, itertools.count(1))
+&gt;&gt;&gt; for n in itertools.takewhile(lambda x: x&lt;100, r):
+...     print n
+...
+结果是什么?
+</code></pre><p>如果把<code>imap()</code>换成<code>map()</code>去处理无限序列会有什么结果？</p>
+<pre><code>&gt;&gt;&gt; r = map(lambda x: x*x, itertools.count(1))
+结果是什么?
+</code></pre><h3><a name="#ifilter-"></a>ifilter()</h3>
+<p>不用多说了，<code>ifilter()</code>就是<code>filter()</code>的惰性实现。</p>
+<h3><a name="#-E5-B0-8F-E7-BB-93"></a>小结</h3>
+<p><code>itertools</code>模块提供的全部是处理迭代功能的函数，它们的返回值不是list，而是迭代对象，只有用<code>for</code>循环迭代的时候才真正计算。</p>
+</div>
+
+    <div class="</body></html>

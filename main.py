@@ -2,7 +2,7 @@
 import urllib
 # credit :https://github.com/cyhhao
 domain = 'http://www.liaoxuefeng.com'           #廖雪峰的域名
-path = r'D:\git\myFIrstCrawl\crawl_sep_2\'    #html要保存的路径
+path = r'D:\git\myFIrstCrawl\crawl_sep_2\\'    #html要保存的路径
 
 # 一个html的头文件
 input = open(r'D:\git\myFIrstCrawl\0.html', 'r')
