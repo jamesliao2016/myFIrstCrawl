@@ -2,10 +2,10 @@
 import urllib
 # credit :https://github.com/cyhhao
 domain = 'http://www.liaoxuefeng.com'           #廖雪峰的域名
-path = r'C:\Users\cyhhao2013\Desktop\temp\\'    #html要保存的路径
+path = r'D:\git\myFIrstCrawl\crawl_sep_2'    #html要保存的路径
 
 # 一个html的头文件
-input = open(r'C:\Users\cyhhao2013\Desktop\0.html', 'r')
+input = open(r'D:\git\myFIrstCrawl\0.html', 'r')
 head = input.read()
 
 # 打开python教程主界面
@@ -39,8 +39,8 @@ for li in list:
     title = title.decode('utf-8').replace("/", " ")
 
     # 截取正文
-    html = html.split(r'<!-- block main -->')[1]
-    html = html.split(r'<h4>您的支持是作者写作最大的动力！</h4>')[0]
+    html = html.split(r'div class="x-wiki-content x-main-content')[1]
+    html = html.split(r'x-sponsor-a uk-clearfix')[0]
     html = html.replace(r'src="', 'src="' + domain)
 
     # 加上头和尾组成完整的html
